@@ -102,8 +102,8 @@ data %>% group_by(cyl) %>% select(one_of(column.names)) %>% summarise_each(funs(
 
 The main advantage to over a regular data frame is the printing: tbl objects only print a few rows and all the columns that fit on one screen and avoid accidental print of a full data set to the screen.
 
-```
-> tbl_df(movies)
+```r
+> (movies_df = tbl_df(movies))
 Source: local data frame [58,788 x 24]
 
                       title year length budget rating votes   r1   r2  r3   r4   r5
@@ -138,7 +138,7 @@ The most common dplyr functions also referred to as verbs are as follows:
 `glimpse` is an analogue of `str` and tries to show you more of the data.
 
 
-```
+```r
 > str(movies)
 'data.frame':    58788 obs. of  24 variables:
  $ title      : chr  "$" "$1000 a Touchdown" "$21 a Day Once a Month" "$40,000" ...
@@ -167,7 +167,7 @@ The most common dplyr functions also referred to as verbs are as follows:
  $ Short      : int  0 0 1 0 0 0 0 1 0 0 ...
 ```
 
-```
+```r
 > glimpse(movies)
 Observations: 58788
 Variables:
@@ -197,11 +197,154 @@ $ Romance     (int) 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, ...
 $ Short       (int) 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 1, ...
 ```
 
-## Subset observations
-
-![](images/image-subsetobservation.png)
-
-### Filter
+## dplyr::filter
 
 `filter()` allows you to select a subset of the rows of a data frame matching some criterias or conditions.
+The first argument is the name of the data frame, and the second and subsequent are filtering expressions evaluated in the context of that data frame.
 
+### AND condition
+
+`base`
+
+```r
+movies_df[movies_df$year == 2005 & movies_df$rating > 9.5, ]
+```
+
+```r
+Source: local data frame [10 x 24]
+
+                    title year length budget rating votes r1  r2 r3 r4 r5 r6 r7   r8   r9  r10 mpaa Action
+1            Blaze Orange 2005     16      0    9.6     7  0 0.0  0  0  0  0  0 14.5 14.5 74.5           0
+2      Filmic Achievement 2005     80     NA    9.6    10  0 0.0  0  0  0  0  0 14.5 24.5 74.5           0
+3          Goodnight Bill 2005     19     NA    9.6     7  0 0.0  0  0  0  0  0  0.0 44.5 45.5           0
+4        Goodnite Charlie 2005    119 100000    9.8    34  0 4.5  0  0  0  0  0  4.5  4.5 84.5           1
+5      Keeper of the Past 2005     18  30000    9.9     7  0 0.0  0  0  0  0  0  0.0 14.5 84.5           0
+6              Morphin(e) 2005     20   8000    9.7     7  0 0.0  0  0  0  0  0  0.0 24.5 74.5           1
+7                  Nun Fu 2005      5   5000    9.8     5  0 0.0  0  0  0  0  0  0.0 24.5 84.5           1
+8               Oath, The 2005     23     NA    9.8     5  0 0.0  0  0  0  0  0  0.0 24.5 84.5           0
+9  Weg ist das Spiel, Der 2005      3     NA    9.8     8  0 0.0  0  0  0  0  0  0.0 24.5 74.5           0
+10        Wild Girls Gone 2005     93     NA    9.6     7  0 0.0  0  0  0  0  0 14.5 14.5 74.5           0
+Variables not shown: Animation (int), Comedy (int), Drama (int), Documentary (int), Romance (int), Short (int)
+```
+
+`dplyr`
+
+```r
+filter(movies_df, year == 2005, rating > 9.5)
+```
+
+```r
+Source: local data frame [10 x 24]
+
+                    title year length budget rating votes r1  r2 r3 r4 r5 r6 r7   r8   r9  r10 mpaa Action
+1            Blaze Orange 2005     16      0    9.6     7  0 0.0  0  0  0  0  0 14.5 14.5 74.5           0
+2      Filmic Achievement 2005     80     NA    9.6    10  0 0.0  0  0  0  0  0 14.5 24.5 74.5           0
+3          Goodnight Bill 2005     19     NA    9.6     7  0 0.0  0  0  0  0  0  0.0 44.5 45.5           0
+4        Goodnite Charlie 2005    119 100000    9.8    34  0 4.5  0  0  0  0  0  4.5  4.5 84.5           1
+5      Keeper of the Past 2005     18  30000    9.9     7  0 0.0  0  0  0  0  0  0.0 14.5 84.5           0
+6              Morphin(e) 2005     20   8000    9.7     7  0 0.0  0  0  0  0  0  0.0 24.5 74.5           1
+7                  Nun Fu 2005      5   5000    9.8     5  0 0.0  0  0  0  0  0  0.0 24.5 84.5           1
+8               Oath, The 2005     23     NA    9.8     5  0 0.0  0  0  0  0  0  0.0 24.5 84.5           0
+9  Weg ist das Spiel, Der 2005      3     NA    9.8     8  0 0.0  0  0  0  0  0  0.0 24.5 74.5           0
+10        Wild Girls Gone 2005     93     NA    9.6     7  0 0.0  0  0  0  0  0 14.5 14.5 74.5           0
+Variables not shown: Animation (int), Comedy (int), Drama (int), Documentary (int), Romance (int), Short (int)
+```
+
+--------
+
+### OR condition
+
+`base`
+
+```r
+movies_df[movies_df$year == 2005 & movies_df$rating > 9.5 & (movies_df$Animation == 1 | movies_df$Short == 1), ]
+```
+
+```r
+Source: local data frame [7 x 24]
+
+                   title year length budget rating votes r1 r2 r3 r4 r5 r6 r7   r8   r9  r10 mpaa Action
+1           Blaze Orange 2005     16      0    9.6     7  0  0  0  0  0  0  0 14.5 14.5 74.5           0
+2         Goodnight Bill 2005     19     NA    9.6     7  0  0  0  0  0  0  0  0.0 44.5 45.5           0
+3     Keeper of the Past 2005     18  30000    9.9     7  0  0  0  0  0  0  0  0.0 14.5 84.5           0
+4             Morphin(e) 2005     20   8000    9.7     7  0  0  0  0  0  0  0  0.0 24.5 74.5           1
+5                 Nun Fu 2005      5   5000    9.8     5  0  0  0  0  0  0  0  0.0 24.5 84.5           1
+6              Oath, The 2005     23     NA    9.8     5  0  0  0  0  0  0  0  0.0 24.5 84.5           0
+7 Weg ist das Spiel, Der 2005      3     NA    9.8     8  0  0  0  0  0  0  0  0.0 24.5 74.5           0
+Variables not shown: Animation (int), Comedy (int), Drama (int), Documentary (int), Romance (int), Short (int)
+```
+
+`dplyr`
+
+```r
+filter(movies_df, year == 2005, rating > 9.5, Animation == 1 | Short == 1)
+```
+
+```r
+Source: local data frame [7 x 24]
+
+                   title year length budget rating votes r1 r2 r3 r4 r5 r6 r7   r8   r9  r10 mpaa Action
+1           Blaze Orange 2005     16      0    9.6     7  0  0  0  0  0  0  0 14.5 14.5 74.5           0
+2         Goodnight Bill 2005     19     NA    9.6     7  0  0  0  0  0  0  0  0.0 44.5 45.5           0
+3     Keeper of the Past 2005     18  30000    9.9     7  0  0  0  0  0  0  0  0.0 14.5 84.5           0
+4             Morphin(e) 2005     20   8000    9.7     7  0  0  0  0  0  0  0  0.0 24.5 74.5           1
+5                 Nun Fu 2005      5   5000    9.8     5  0  0  0  0  0  0  0  0.0 24.5 84.5           1
+6              Oath, The 2005     23     NA    9.8     5  0  0  0  0  0  0  0  0.0 24.5 84.5           0
+7 Weg ist das Spiel, Der 2005      3     NA    9.8     8  0  0  0  0  0  0  0  0.0 24.5 74.5           0
+Variables not shown: Animation (int), Comedy (int), Drama (int), Documentary (int), Romance (int), Short (int)
+```
+
+We can include any `?Comparison` or `?base::Logic` operators in our filter.
+
+## dplyr::slice
+
+Slice is a variant of filter used to extract rows based on position.
+
+
+`base`
+
+```r
+movies_df[1:10, ]
+```
+
+```r
+Source: local data frame [10 x 24]
+
+                      title year length budget rating votes   r1   r2  r3   r4   r5   r6   r7   r8   r9
+1                         $ 1971    121     NA    6.4   348  4.5  4.5 4.5  4.5 14.5 24.5 24.5 14.5  4.5
+2         $1000 a Touchdown 1939     71     NA    6.0    20  0.0 14.5 4.5 24.5 14.5 14.5 14.5  4.5  4.5
+3    $21 a Day Once a Month 1941      7     NA    8.2     5  0.0  0.0 0.0  0.0  0.0 24.5  0.0 44.5 24.5
+4                   $40,000 1996     70     NA    8.2     6 14.5  0.0 0.0  0.0  0.0  0.0  0.0  0.0 34.5
+5  $50,000 Climax Show, The 1975     71     NA    3.4    17 24.5  4.5 0.0 14.5 14.5  4.5  0.0  0.0  0.0
+6                     $pent 2000     91     NA    4.3    45  4.5  4.5 4.5 14.5 14.5 14.5  4.5  4.5 14.5
+7                   $windle 2002     93     NA    5.3   200  4.5  0.0 4.5  4.5 24.5 24.5 14.5  4.5  4.5
+8                      '15' 2002     25     NA    6.7    24  4.5  4.5 4.5  4.5  4.5 14.5 14.5 14.5  4.5
+9                       '38 1987     97     NA    6.6    18  4.5  4.5 4.5  0.0  0.0  0.0 34.5 14.5  4.5
+10                  '49-'17 1917     61     NA    6.0    51  4.5  0.0 4.5  4.5  4.5 44.5 14.5  4.5  4.5
+Variables not shown: r10 (dbl), mpaa (fctr), Action (int), Animation (int), Comedy (int), Drama (int),
+  Documentary (int), Romance (int), Short (int)
+```
+
+`dplyr`
+
+```r
+slice(movies_df, 1:10)
+```
+
+```r
+Source: local data frame [10 x 24]
+
+                      title year length budget rating votes   r1   r2  r3   r4   r5   r6   r7   r8   r9
+1                         $ 1971    121     NA    6.4   348  4.5  4.5 4.5  4.5 14.5 24.5 24.5 14.5  4.5
+2         $1000 a Touchdown 1939     71     NA    6.0    20  0.0 14.5 4.5 24.5 14.5 14.5 14.5  4.5  4.5
+3    $21 a Day Once a Month 1941      7     NA    8.2     5  0.0  0.0 0.0  0.0  0.0 24.5  0.0 44.5 24.5
+4                   $40,000 1996     70     NA    8.2     6 14.5  0.0 0.0  0.0  0.0  0.0  0.0  0.0 34.5
+5  $50,000 Climax Show, The 1975     71     NA    3.4    17 24.5  4.5 0.0 14.5 14.5  4.5  0.0  0.0  0.0
+6                     $pent 2000     91     NA    4.3    45  4.5  4.5 4.5 14.5 14.5 14.5  4.5  4.5 14.5
+7                   $windle 2002     93     NA    5.3   200  4.5  0.0 4.5  4.5 24.5 24.5 14.5  4.5  4.5
+8                      '15' 2002     25     NA    6.7    24  4.5  4.5 4.5  4.5  4.5 14.5 14.5 14.5  4.5
+9                       '38 1987     97     NA    6.6    18  4.5  4.5 4.5  0.0  0.0  0.0 34.5 14.5  4.5
+10                  '49-'17 1917     61     NA    6.0    51  4.5  0.0 4.5  4.5  4.5 44.5 14.5  4.5  4.5
+Variables not shown: r10 (dbl), mpaa (fctr), Action (int), Animation (int), Comedy (int), Drama (int),
+  Documentary (int), Romance (int), Short (int)
+```

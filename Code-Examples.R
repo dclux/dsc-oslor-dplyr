@@ -1,20 +1,6 @@
 # Introduction to Split-Apply using base and dplyr
 #
-# Calculate the median values for a few parameters for cars with different numbers of cylinders.
-#
-# mtcars is a data frame with 32 observations on 11 variables.
-# 
-# [, 1]	mpg	Miles/(US) gallon
-# [, 2]	cyl	Number of cylinders
-# [, 3]	disp	Displacement (cu.in.)
-# [, 4]	hp	Gross horsepower
-# [, 5]	drat	Rear axle ratio
-# [, 6]	wt	Weight (lb/1000)
-# [, 7]	qsec	1/4 mile time
-# [, 8]	vs	V/S
-# [, 9]	am	Transmission (0 = automatic, 1 = manual)
-# [,10]	gear	Number of forward gears
-# [,11]	carb	Number of carburetors
+# movies is a data frame in ggplo2 packages with 58788 observations.
 
 library(ggplot2)
 library(dplyr)
@@ -45,3 +31,28 @@ column.names = c("rating", "votes", "length")
     
 # Filter-Split-Apply using dplyr
     data %>% group_by(year) %>% select(one_of(column.names)) %>% summarise_each(funs(mean))
+    
+# create movies data frame
+movies_df = tbl_df(movies)
+
+# filter
+
+    #base (and)
+    movies_df[movies_df$year == 2005 & movies_df$rating > 9.5, ]
+
+    #dplyr (and)
+    filter(movies_df, year == 2005, rating > 9.5)
+    
+    #base (and + or)
+    movies_df[movies_df$year == 2005 & movies_df$rating > 9.5 & (movies_df$Animation == 1 | movies_df$Short == 1), ]
+    
+    #dplyr (and + or)
+    filter(movies_df, year == 2005, rating > 9.5, Animation == 1 | Short == 1)
+    
+# slice
+    
+    #base
+    movies_df[1:10, ]
+    
+    #dplyr
+    slice(movies_df, 1:10)
