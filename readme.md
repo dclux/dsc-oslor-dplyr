@@ -199,7 +199,7 @@ $ Short       (int) 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 1, ...
 
 ## Subset observations
 
-![](images/image-subsetobservation.png =250x)
+![](images/image-subsetobservation.png)
 
 ### Filter
 
