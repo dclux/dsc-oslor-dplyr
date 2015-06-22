@@ -271,7 +271,8 @@ Source: local data frame [7 x 24]
 5                 Nun Fu 2005      5   5000    9.8     5  0  0  0  0  0  0  0  0.0 24.5 84.5           1
 6              Oath, The 2005     23     NA    9.8     5  0  0  0  0  0  0  0  0.0 24.5 84.5           0
 7 Weg ist das Spiel, Der 2005      3     NA    9.8     8  0  0  0  0  0  0  0  0.0 24.5 74.5           0
-Variables not shown: Animation (int), Comedy (int), Drama (int), Documentary (int), Romance (int), Short (int)
+Variables not shown: Animation (int), Comedy (int), Drama (int), Documentary (int), Romance (int),
+  Short (int)
 ```
 
 `dplyr`
@@ -291,7 +292,8 @@ Source: local data frame [7 x 24]
 5                 Nun Fu 2005      5   5000    9.8     5  0  0  0  0  0  0  0  0.0 24.5 84.5           1
 6              Oath, The 2005     23     NA    9.8     5  0  0  0  0  0  0  0  0.0 24.5 84.5           0
 7 Weg ist das Spiel, Der 2005      3     NA    9.8     8  0  0  0  0  0  0  0  0.0 24.5 74.5           0
-Variables not shown: Animation (int), Comedy (int), Drama (int), Documentary (int), Romance (int), Short (int)
+Variables not shown: Animation (int), Comedy (int), Drama (int), Documentary (int), Romance (int),
+  Short (int)
 ```
 
 We can include any `?Comparison` or `?base::Logic` operators in our filter.
@@ -348,3 +350,147 @@ Source: local data frame [10 x 24]
 Variables not shown: r10 (dbl), mpaa (fctr), Action (int), Animation (int), Comedy (int), Drama (int),
   Documentary (int), Romance (int), Short (int)
 ```
+
+## dplyr::arrange
+
+Order data based on specified columns. 
+
+`base`
+
+```r
+movies_df[order(movies_df$votes), ]
+```
+
+```r
+Source: local data frame [58,788 x 24]
+
+                                                                title year length budget rating votes   r1
+1                                              $21 a Day Once a Month 1941      7     NA    8.2     5  0.0
+2  'Sugar Chile' Robinson, Billie Holiday, Count Basie and His Sextet 1951     15     NA    5.3     5  0.0
+3                                                  ...ani smrt nebere 1996     88     NA    3.6     5 44.5
+4                       ...dopo di che, uccide il maschio e lo divora 1971     96     NA    6.1     5  0.0
+5                                          ...und abends in die Scala 1958     94     NA    5.7     5  0.0
+6                                         ...und die Liebe lacht dazu 1957     97     NA    6.8     5  0.0
+7                                                               1+1=3 1979     85     NA    7.5     5  0.0
+8                                              1,000 Dollars a Minute 1935     70     NA    6.2     5  0.0
+9                                                                10.7 1997     28     NA    8.8     5  0.0
+10                                                   10000th Day, The 1997     18     NA    8.0     5  0.0
+..                                                                ...  ...    ...    ...    ...   ...  ...
+Variables not shown: r2 (dbl), r3 (dbl), r4 (dbl), r5 (dbl), r6 (dbl), r7 (dbl), r8 (dbl), r9 (dbl),
+  r10 (dbl), mpaa (fctr), Action (int), Animation (int), Comedy (int), Drama (int), Documentary (int),
+  Romance (int), Short (int)
+```
+
+`dplyr`
+
+```r
+arrange(movies_df, votes)
+```
+
+```r
+Source: local data frame [58,788 x 24]
+
+                                                                title year length budget rating votes   r1
+1                                              $21 a Day Once a Month 1941      7     NA    8.2     5  0.0
+2  'Sugar Chile' Robinson, Billie Holiday, Count Basie and His Sextet 1951     15     NA    5.3     5  0.0
+3                                                  ...ani smrt nebere 1996     88     NA    3.6     5 44.5
+4                       ...dopo di che, uccide il maschio e lo divora 1971     96     NA    6.1     5  0.0
+5                                          ...und abends in die Scala 1958     94     NA    5.7     5  0.0
+6                                         ...und die Liebe lacht dazu 1957     97     NA    6.8     5  0.0
+7                                                               1+1=3 1979     85     NA    7.5     5  0.0
+8                                              1,000 Dollars a Minute 1935     70     NA    6.2     5  0.0
+9                                                                10.7 1997     28     NA    8.8     5  0.0
+10                                                   10000th Day, The 1997     18     NA    8.0     5  0.0
+..                                                                ...  ...    ...    ...    ...   ...  ...
+Variables not shown: r2 (dbl), r3 (dbl), r4 (dbl), r5 (dbl), r6 (dbl), r7 (dbl), r8 (dbl), r9 (dbl),
+  r10 (dbl), mpaa (fctr), Action (int), Animation (int), Comedy (int), Drama (int), Documentary (int),
+  Romance (int), Short (int)
+```
+
+--------
+
+### descending
+
+`dplyr descending`
+
+```r
+arrange(movies_df, desc(votes))
+```
+
+```r
+Source: local data frame [58,788 x 24]
+
+                                                title year length   budget rating  votes  r1  r2  r3  r4  r5
+1  Lord of the Rings: The Fellowship of the Ring, The 2001    208 93000000    8.8 157608 4.5 4.5 4.5 4.5 4.5
+2                           Shawshank Redemption, The 1994    142 25000000    9.1 149494 4.5 4.5 4.5 4.5 4.5
+3                                         Matrix, The 1999    136 63000000    8.5 143853 4.5 4.5 4.5 4.5 4.5
+4                                           Star Wars 1977    125 11000000    8.8 134640 4.5 4.5 4.5 4.5 4.5
+5                                        Pulp Fiction 1994    168  8000000    8.8 132745 4.5 4.5 4.5 4.5 4.5
+6                                      Godfather, The 1972    175  6000000    9.1 122755 4.5 4.5 4.5 4.5 4.5
+7              Lord of the Rings: The Two Towers, The 2002    223 94000000    8.8 114797 4.5 4.5 4.5 4.5 4.5
+8                                          Fight Club 1999    139 63000000    8.5 112092 4.5 4.5 4.5 4.5 4.5
+9                                     American Beauty 1999    121 15000000    8.5 109991 4.5 4.5 4.5 4.5 4.5
+10                                Usual Suspects, The 1995    106  6000000    8.7 103854 4.5 4.5 4.5 4.5 4.5
+..                                                ...  ...    ...      ...    ...    ... ... ... ... ... ...
+Variables not shown: r6 (dbl), r7 (dbl), r8 (dbl), r9 (dbl), r10 (dbl), mpaa (fctr), Action (int), Animation
+(int), Comedy (int), Drama (int), Documentary (int), Romance (int), Short (int)
+```
+
+
+--------
+
+### ascending and descending
+
+If you provide more than one column name, each additional column will be used to break ties in the values of preceding columns.
+
+`base`
+
+```r
+movies_df[order(movies_df$budget, -movies_df$votes), ]
+```
+
+```r
+Source: local data frame [58,788 x 24]
+
+                       title year length budget rating votes   r1   r2  r3   r4   r5   r6   r7   r8
+1        Last Broadcast, The 1998     86      0    5.7   967 14.5  4.5 4.5  4.5  4.5 14.5 14.5 14.5
+2   Great Train Robbery, The 1903     12      0    7.4   849  4.5  4.5 4.5  4.5  4.5 14.5 24.5 24.5
+3                  Tarnation 2003     88      0    7.7   596  4.5  4.5 4.5  4.5  4.5  4.5 14.5 14.5
+4   Six Figures Getting Sick 1966      4      0    6.3   357  4.5  4.5 4.5  4.5 14.5 14.5 14.5 14.5
+5                 My Hustler 1965     79      0    7.0    39  4.5  4.5 4.5  4.5  4.5  4.5 14.5 24.5
+6  Adventures of Dollie, The 1908     12      0    5.1    34  4.5  4.5 4.5  4.5 24.5 14.5  4.5 24.5
+7               Run Leia Run 2003     16      0    5.5    32  4.5 14.5 4.5  4.5  4.5  4.5  4.5 14.5
+8              Visitant, The 1981     22      0    7.1    30 24.5  0.0 0.0  4.5  0.0  4.5 14.5  4.5
+9             From the Drain 1967     14      0    5.1    28 14.5  4.5 0.0 14.5 14.5 24.5 14.5  4.5
+10                      Zero 2000     20      0    8.1    24 24.5  0.0 0.0  0.0  0.0  4.5  0.0  0.0
+..                       ...  ...    ...    ...    ...   ...  ...  ... ...  ...  ...  ...  ...  ...
+Variables not shown: r9 (dbl), r10 (dbl), mpaa (fctr), Action (int), Animation (int), Comedy (int),
+  Drama (int), Documentary (int), Romance (int), Short (int)
+```
+
+`dplyr descending`
+
+```r
+arrange(movies_df, budget, desc(votes))
+```
+
+```r
+Source: local data frame [58,788 x 24]
+
+                       title year length budget rating votes   r1   r2  r3   r4   r5   r6   r7   r8
+1        Last Broadcast, The 1998     86      0    5.7   967 14.5  4.5 4.5  4.5  4.5 14.5 14.5 14.5
+2   Great Train Robbery, The 1903     12      0    7.4   849  4.5  4.5 4.5  4.5  4.5 14.5 24.5 24.5
+3                  Tarnation 2003     88      0    7.7   596  4.5  4.5 4.5  4.5  4.5  4.5 14.5 14.5
+4   Six Figures Getting Sick 1966      4      0    6.3   357  4.5  4.5 4.5  4.5 14.5 14.5 14.5 14.5
+5                 My Hustler 1965     79      0    7.0    39  4.5  4.5 4.5  4.5  4.5  4.5 14.5 24.5
+6  Adventures of Dollie, The 1908     12      0    5.1    34  4.5  4.5 4.5  4.5 24.5 14.5  4.5 24.5
+7               Run Leia Run 2003     16      0    5.5    32  4.5 14.5 4.5  4.5  4.5  4.5  4.5 14.5
+8              Visitant, The 1981     22      0    7.1    30 24.5  0.0 0.0  4.5  0.0  4.5 14.5  4.5
+9             From the Drain 1967     14      0    5.1    28 14.5  4.5 0.0 14.5 14.5 24.5 14.5  4.5
+10                      Zero 2000     20      0    8.1    24 24.5  0.0 0.0  0.0  0.0  4.5  0.0  0.0
+..                       ...  ...    ...    ...    ...   ...  ...  ... ...  ...  ...  ...  ...  ...
+Variables not shown: r9 (dbl), r10 (dbl), mpaa (fctr), Action (int), Animation (int), Comedy (int),
+  Drama (int), Documentary (int), Romance (int), Short (int)
+```
+
+

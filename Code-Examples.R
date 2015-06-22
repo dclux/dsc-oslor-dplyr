@@ -56,3 +56,23 @@ movies_df = tbl_df(movies)
     
     #dplyr
     slice(movies_df, 1:10)
+    
+# arrange
+    
+    # base (asc)
+    movies_df[order(movies_df$votes), ]
+    
+    # dplyr (asc)
+    arrange(movies_df, votes)
+    
+    # dplyr (desc)
+    arrange(movies_df, desc(votes))
+    
+    # base (asc + desc)
+    movies_df[order(movies_df$budget, -movies_df$votes), ]
+    
+    # dplyr (asc + desc)
+    arrange(movies_df, budget, desc(votes))
+    
+
+    
