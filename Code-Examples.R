@@ -74,5 +74,41 @@ movies_df = tbl_df(movies)
     # dplyr (asc + desc)
     arrange(movies_df, budget, desc(votes))
     
-
+# select
     
+    # base
+    movies_df[ , colnames(movies_df) %in% c("title","length")]
+    movies_df[ , c("title", "length")]
+    
+    # dplyr
+    select(movies_df, title, year)
+    
+    # dplyr
+    select(movies_df, one_of("title", "year"))
+    
+    # dplyr exclude columns from r1 to mpaa
+    select(movies_df, -(r1:mpaa))
+    
+# mutate and transmute
+    
+    # base
+    yearsSinceDate = 2015 - movies_df$year
+    movies.new.base = cbind(yearsSinceDate, movies_df)
+    
+    # dplyr
+    transmute(movies_df, yearsSinceDate = 2015 - year)
+    mutate(movies_df, yearsSinceDate = 2015 - year)
+    
+    # dplyr advanced
+    transmute(movies_df, title, yearsSinceDate = 2015 - year, yearsToAnniversary = 100 - yearsSinceDate)
+    
+# summarise
+    
+    # dplyr
+    transmute(movies_df, yearsSinceDate = 2015 - year) %>% summarise(age.median = median(yearsSinceDate))
+    
+    # dplyr (budget)
+    movies_df %>% summarize(budget.na.percent = sum(is.na(budget)) / length(budget) )
+    
+    # dplyr summarise_each
+    select(movies_df, Action:Short) %>% summarise_each(funs(sum))

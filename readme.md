@@ -1,5 +1,6 @@
 # Data wrangling? No problem, let's talk about DPLYR package!
-24.06.2015, Oslo useR! Group, Dmitrijs Cudihins
+24.06.2015, Oslo useR! Group
+Dmitrijs Cudihins
 
 ## Who am I
 
@@ -493,4 +494,228 @@ Variables not shown: r9 (dbl), r10 (dbl), mpaa (fctr), Action (int), Animation (
   Drama (int), Documentary (int), Romance (int), Short (int)
 ```
 
+## dplyr::select
+
+Often you work with large datasets with many columns where only a few are actually of interest to you.
+
+
+`base`
+
+```r
+movies_df[ , colnames(movies_df) %in% c("title","length")]
+movies_df[ , c("title", "length")]
+```
+
+```r
+Source: local data frame [58,788 x 2]
+
+                      title length
+1                         $    121
+2         $1000 a Touchdown     71
+3    $21 a Day Once a Month      7
+4                   $40,000     70
+5  $50,000 Climax Show, The     71
+6                     $pent     91
+7                   $windle     93
+8                      '15'     25
+9                       '38     97
+10                  '49-'17     61
+..                      ...    ...
+```
+
+`dplyr`
+
+```r
+select(movies_df, title, year)
+select(movies_df, one_of(c("title", "year")))
+```
+
+```r
+Source: local data frame [58,788 x 2]
+
+                      title year
+1                         $ 1971
+2         $1000 a Touchdown 1939
+3    $21 a Day Once a Month 1941
+4                   $40,000 1996
+5  $50,000 Climax Show, The 1975
+6                     $pent 2000
+7                   $windle 2002
+8                      '15' 2002
+9                       '38 1987
+10                  '49-'17 1917
+..                      ...  ...
+```
+
+
+`dplyr exclude columns`
+
+```r
+select(movies_df, -(r1:mpaa))
+```
+
+```r
+Source: local data frame [58,788 x 13]
+
+                      title year length budget rating votes Action Animation Comedy Drama Documentary
+1                         $ 1971    121     NA    6.4   348      0         0      1     1           0
+2         $1000 a Touchdown 1939     71     NA    6.0    20      0         0      1     0           0
+3    $21 a Day Once a Month 1941      7     NA    8.2     5      0         1      0     0           0
+4                   $40,000 1996     70     NA    8.2     6      0         0      1     0           0
+5  $50,000 Climax Show, The 1975     71     NA    3.4    17      0         0      0     0           0
+6                     $pent 2000     91     NA    4.3    45      0         0      0     1           0
+7                   $windle 2002     93     NA    5.3   200      1         0      0     1           0
+8                      '15' 2002     25     NA    6.7    24      0         0      0     0           1
+9                       '38 1987     97     NA    6.6    18      0         0      0     1           0
+10                  '49-'17 1917     61     NA    6.0    51      0         0      0     0           0
+..                      ...  ...    ...    ...    ...   ...    ...       ...    ...   ...         ...
+Variables not shown: Romance (int), Short (int)
+```
+
+--------
+
+### helper methods
+
+There are a number of helper functions you can use within `select()`, like `starts_with()`, `ends_with()`, `matches()` and `contains()`. These let you quickly match larger blocks of variable that meet some criterion.
+
+![](images/image-select.png)
+
+
+## mutate and transmute
+
+As well as selecting from the set of existing columns, it’s often useful to add new columns that are functions of existing columns or create stand alone variables.
+
+As an example, lets calculate the age of the movie.
+
+`base`
+
+```r
+yearsSinceDate = 2015 - movies_df$year
+movies_df_new = cbind(yearsSinceDate, movies_df)
+```
+
+```r
+Source: local data frame [58,788 x 25]
+
+   yearsSinceDate                    title year length budget rating votes   r1   r2  r3   r4   r5   r6
+1              44                        $ 1971    121     NA    6.4   348  4.5  4.5 4.5  4.5 14.5 24.5
+2              76        $1000 a Touchdown 1939     71     NA    6.0    20  0.0 14.5 4.5 24.5 14.5 14.5
+3              74   $21 a Day Once a Month 1941      7     NA    8.2     5  0.0  0.0 0.0  0.0  0.0 24.5
+4              19                  $40,000 1996     70     NA    8.2     6 14.5  0.0 0.0  0.0  0.0  0.0
+5              40 $50,000 Climax Show, The 1975     71     NA    3.4    17 24.5  4.5 0.0 14.5 14.5  4.5
+6              15                    $pent 2000     91     NA    4.3    45  4.5  4.5 4.5 14.5 14.5 14.5
+7              13                  $windle 2002     93     NA    5.3   200  4.5  0.0 4.5  4.5 24.5 24.5
+8              13                     '15' 2002     25     NA    6.7    24  4.5  4.5 4.5  4.5  4.5 14.5
+9              28                      '38 1987     97     NA    6.6    18  4.5  4.5 4.5  0.0  0.0  0.0
+10             98                  '49-'17 1917     61     NA    6.0    51  4.5  0.0 4.5  4.5  4.5 44.5
+..            ...                      ...  ...    ...    ...    ...   ...  ...  ... ...  ...  ...  ...
+Variables not shown: r7 (dbl), r8 (dbl), r9 (dbl), r10 (dbl), mpaa (fctr), Action (int), Animation
+  (int), Comedy (int), Drama (int), Documentary (int), Romance (int), Short (int)
+```
+
+`dplyr`
+
+```r
+transmute(movies_df, yearsSinceDate = 2015 - year)
+mutate(movies_df, yearsSinceDate = 2015 - year)
+```
+
+```r
+Source: local data frame [58,788 x 25]
+
+                      title year length budget rating votes   r1   r2  r3   r4   r5   r6   r7   r8   r9
+1                         $ 1971    121     NA    6.4   348  4.5  4.5 4.5  4.5 14.5 24.5 24.5 14.5  4.5
+2         $1000 a Touchdown 1939     71     NA    6.0    20  0.0 14.5 4.5 24.5 14.5 14.5 14.5  4.5  4.5
+3    $21 a Day Once a Month 1941      7     NA    8.2     5  0.0  0.0 0.0  0.0  0.0 24.5  0.0 44.5 24.5
+4                   $40,000 1996     70     NA    8.2     6 14.5  0.0 0.0  0.0  0.0  0.0  0.0  0.0 34.5
+5  $50,000 Climax Show, The 1975     71     NA    3.4    17 24.5  4.5 0.0 14.5 14.5  4.5  0.0  0.0  0.0
+6                     $pent 2000     91     NA    4.3    45  4.5  4.5 4.5 14.5 14.5 14.5  4.5  4.5 14.5
+7                   $windle 2002     93     NA    5.3   200  4.5  0.0 4.5  4.5 24.5 24.5 14.5  4.5  4.5
+8                      '15' 2002     25     NA    6.7    24  4.5  4.5 4.5  4.5  4.5 14.5 14.5 14.5  4.5
+9                       '38 1987     97     NA    6.6    18  4.5  4.5 4.5  0.0  0.0  0.0 34.5 14.5  4.5
+10                  '49-'17 1917     61     NA    6.0    51  4.5  0.0 4.5  4.5  4.5 44.5 14.5  4.5  4.5
+..                      ...  ...    ...    ...    ...   ...  ...  ... ...  ...  ...  ...  ...  ...  ...
+Variables not shown: r10 (dbl), mpaa (fctr), Action (int), Animation (int), Comedy (int), Drama (int),
+  Documentary (int), Romance (int), Short (int), yearsSinceDate (dbl)
+```
+
+### tip
+
+Many dplyr functions will let you use newly create variables in the same function which is creating the variable in the first place.
+
+![](images/image-deeper.jpg)
+
+Lets calculate how many years left to anniversary. 
+
+`dplyr`
+
+```r
+transmute(movies_df, title, yearsSinceDate = 2015 - year, yearsToAnniversary = 100 - yearsSinceDate)
+```
+
+```r
+Source: local data frame [58,788 x 3]
+
+                      title yearsSinceDate yearsToAnniversary
+1                         $             44                 56
+2         $1000 a Touchdown             76                 24
+3    $21 a Day Once a Month             74                 26
+4                   $40,000             19                 81
+5  $50,000 Climax Show, The             40                 60
+6                     $pent             15                 85
+7                   $windle             13                 87
+8                      '15'             13                 87
+9                       '38             28                 72
+10                  '49-'17             98                  2
+..                      ...            ...                ...
+```
+
+## dplyr::summarise
+
+Verb is `summarise()`, which collapses a data frame to a single row.
+
+![](images/image-summarise.png)
+
+Lets calculate median for a newly created `age` column.
+
+```r
+transmute(movies_df, yearsSinceDate = 2015 - year) %>% summarise(age.median = median(yearsSinceDate))
+```
+
+```r
+Source: local data frame [1 x 1]
+
+  age.median
+1         32
+```
+
+--------
+
+Or lets count ratio for movies that don't have a budget.
+
+```r
+movies_df %>% summarize(budget.na.percent = sum(is.na(budget)) / length(budget) )
+```
+
+```r
+Source: local data frame [1 x 1]
+
+  budget.na.percent
+1     0.9112914
+```
+
+--------
+
+We can use `summarise_each` to summarise data across columns. Lets count number of movies by type.
+
+```r
+select(movies_df, Action:Short) %>% summarise_each(funs(sum))
+```
+
+```r
+Source: local data frame [1 x 7]
+
+  Action Animation Comedy Drama Documentary Romance Short
+1   4688      3690  17271 21811        3472    4744  9458
+```
 
