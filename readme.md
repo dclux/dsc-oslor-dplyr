@@ -719,3 +719,86 @@ Source: local data frame [1 x 7]
 1   4688      3690  17271 21811        3472    4744  9458
 ```
 
+## dplyr::group_by
+
+`group_by` breaks the data sets into groups of rows. This function becomes very powerful when combined with the previously discussed `dplyr` verbs. 
+
+Lets calculate number of movies per year per type.
+
+```r
+select(movies_df, year, Action:Short) %>% group_by(year) %>% summarise_each(funs(sum))
+```
+
+```r
+Source: local data frame [113 x 8]
+
+   year Action Animation Comedy Drama Documentary Romance Short
+1  1893      0         0      0     0           0       0     1
+2  1894      0         0      0     0           5       0     9
+3  1895      0         0      0     0           2       0     3
+4  1896      0         0      1     1           7       0    12
+5  1897      0         0      2     0           6       0     7
+6  1898      0         0      2     1           1       0     5
+7  1899      0         0      1     2           4       0     8
+8  1900      0         1      5     2           5       0    16
+9  1901      1         0      8     5           9       1    27
+10 1902      0         0      2     1           2       0     9
+..  ...    ...       ...    ...   ...         ...     ...   ...
+```
+
+--------
+
+We can add additional filter and exclude all movies before 2000 and also count number of votes.
+
+```r
+select(movies_df, year, votes, Action:Short) %>% filter(year >= 2000) %>% group_by(year) %>% summarise_each(funs(sum))
+```
+
+```r
+Source: local data frame [6 x 9]
+
+  year   votes Action Animation Comedy Drama Documentary Romance Short
+1 2000 2173392    154        89    561   793         175     207   449
+2 2001 2263362    169        82    582   837         196     211   468
+3 2002 2270605    176        81    591   929         249     245   533
+4 2003 1816132    180        94    642   899         261     215   555
+5 2004 1540722    147        56    597   805         258     169   480
+6 2005  139286     43        10    123   137          35      37    54
+```
+
+--------
+
+A common data analysis task might be to carry out some group-wise normalization or adjustments of the data. For exmaple, we might want to find most rated movies during the calendar year.
+
+To do this we will start by calculating the average rating for each year.
+
+```r
+averages = select(movies_df, year, rating) %>% group_by(year) %>% summarise_each(funs(mean)) %>% rename(rating.avg = rating)
+```
+
+```r
+Source: local data frame [113 x 2]
+
+   year rating.avg
+1  1893   7.000000
+2  1894   4.888889
+3  1895   5.500000
+4  1896   5.269231
+5  1897   4.677778
+6  1898   5.040000
+7  1899   4.277778
+8  1900   4.731250
+9  1901   4.682143
+10 1902   4.900000
+..  ...        ...
+```
+
+--------
+
+Next we will use joing capabilities of `dplyr` to join averages with movies dataset and calculate the difference.
+
+![](images/image-join1.png)
+
+##
+
+## benchmarking comparison

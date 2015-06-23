@@ -112,3 +112,17 @@ movies_df = tbl_df(movies)
     
     # dplyr summarise_each
     select(movies_df, Action:Short) %>% summarise_each(funs(sum))
+
+# group by
+    
+    #dplyr
+    select(movies_df, year, Action:Short) %>% group_by(year) %>% summarise_each(funs(sum))
+    
+    #dplyr + filter
+    select(movies_df, year, votes, Action:Short) %>% filter(year >= 2000) %>% group_by(year) %>% summarise_each(funs(sum))
+    
+    #dplyr average
+    averages = select(movies_df, year, rating) %>% group_by(year) %>% summarise_each(funs(mean)) %>% rename(rating.avg = rating)
+    
+    #dplyr join
+    inner_join(movies_df, averages, by = "year") %>% mutate(rating.diff = rating - rating.avg) %>% select(title, year, contains("rating"))
