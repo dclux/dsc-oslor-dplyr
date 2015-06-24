@@ -37,15 +37,7 @@ Source: <http://www.rstudio.com/resources/cheatsheets/>
 
 Data analysis involves the procedure of splitting the data set based on a grouping variable and then applying a function to each of the groups (split-apply)
 
-*Demo: Calculate the median values for a few parameters for cars with different numbers of cylinders.*
-
-```r
-# Introduction to Split-Apply using base and dplyr
-#
-# Calculate the mean values for a few parameters for movies in different years.
-#
-# movies is a data frame in ggplo2 packages with 58788 observations.
-```
+Lets calculate the median values for a few parameters for cars with different numbers of cylinders.
 
 ```r
 data(movies)
@@ -802,3 +794,54 @@ Next we will use joing capabilities of `dplyr` to join averages with movies data
 ##
 
 ## benchmarking comparison
+
+Finally, I would like to show easy `head-to-head` comparison of base and dplyr.
+
+Lets prepapre data - generate a data frame with 10000 rows and 100 columns and 100 groups.
+
+```r
+rows = 10000
+cols = 100
+groups = 100
+samples = rows / groups
+tmp.data = data.frame(matrix(rnorm(rows),rows,cols))
+tmp.data$group = rep(1:groups,each=samples)
+```
+
+`base`
+
+```r
+time.start = Sys.time()
+    
+# split the data based on the group
+big.l = split(tmp.data, tmp.data$group)
+    
+# apply some function of interest to all columns
+results = sapply(big.l, function(x) apply(x,2,median))
+    
+# bind results and add splitting info
+results = t(results)
+    
+# elapsed time
+(time.end = Sys.time() - time.start ) 
+```
+
+`dplyr`
+
+```r
+time.start <- Sys.time()
+    
+# complete all action
+results = tmp.data %>% group_by(group) %>% summarise_each(funs(median(.)))
+    
+#elapsed time
+(time.end = Sys.time() - time.start )
+```
+
+```
+base: Time difference of 0.5896311 secs
+```
+
+```
+dplyr: Time difference of 0.310796 secs
+```

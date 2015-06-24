@@ -127,3 +127,38 @@ movies_df = tbl_df(movies)
     
     #dplyr join
     inner_join(movies_df, averages, by = "year") %>% mutate(rating.diff = rating - rating.avg) %>% select(title, year, contains("rating"))
+    
+# benchmarking
+    
+rows = 10000
+cols = 100
+groups = 100
+samples = rows / groups
+tmp.data = data.frame(matrix(rnorm(rows),rows,cols))
+tmp.data$group = rep(1:groups,each=samples)
+
+    # base
+    time.start = Sys.time()
+    
+    # split the data based on the group
+    big.l = split(tmp.data, tmp.data$group)
+    
+    # apply some function of interest to all columns
+    results = sapply(big.l, function(x) apply(x,2,median))
+    
+    # bind results and add splitting info
+    results = t(results)
+    
+    #elapsed time
+    (time.end = Sys.time()-time.start )    
+    
+    # dplyr
+    time.start <- Sys.time()
+    
+    # complete all action
+    results = tmp.data %>% group_by(group) %>% summarise_each(funs(median(.)))
+    
+    #elapsed time
+    (time.end = Sys.time() - time.start )
+    
+    
