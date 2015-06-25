@@ -8,7 +8,7 @@ library(dplyr)
 # Data preparation
 data(movies)
 data = movies
-data$year = factor(data$year)
+#data$year = factor(data$year)
 
 # Preview the dataset
 head(data)
@@ -21,7 +21,7 @@ column.names = c("rating", "votes", "length")
     # Select only required columns
     data.base = data[ , colnames(data) %in% column.names]
     
-    # Split the data on the number of cylinders
+    # Split the data on by year
     data.base.split = split(data.base, data$year)
     
     # Apply function of interest to all columns in our dataset
