@@ -37,7 +37,7 @@ Source: <http://www.rstudio.com/resources/cheatsheets/>
 
 Data analysis involves the procedure of splitting the data set based on a grouping variable and then applying a function to each of the groups (split-apply)
 
-Lets calculate the median values for a few parameters for cars with different numbers of cylinders.
+Lets calculate the median values for a few parameters for movies over different years.
 
 ```r
 data(movies)
@@ -408,8 +408,6 @@ Variables not shown: r2 (dbl), r3 (dbl), r4 (dbl), r5 (dbl), r6 (dbl), r7 (dbl),
   Romance (int), Short (int)
 ```
 
-`Arrange` is a very expensive operation. Of all of the verbs in dplyr `arrange` is the only that needs to make a copy of a dataset.
-
 --------
 
 ### descending
@@ -495,6 +493,8 @@ Source: local data frame [58,788 x 24]
 Variables not shown: r9 (dbl), r10 (dbl), mpaa (fctr), Action (int), Animation (int), Comedy (int),
   Drama (int), Documentary (int), Romance (int), Short (int)
 ```
+
+`arrange` is a very expensive operation. Of all of the verbs in dplyr `arrange` is the only that needs to make a copy of a dataset.
 
 ## dplyr::select
 
@@ -582,7 +582,7 @@ There are a number of helper functions you can use within `select()`, like `star
 ![](images/image-select.png)
 
 
-## mutate and transmute
+## dplyr::mutate and transmute
 
 As well as selecting from the set of existing columns, it’s often useful to add new columns that are functions of existing columns or create stand alone variables.
 
@@ -796,19 +796,11 @@ Source: local data frame [113 x 2]
 ..  ...        ...
 ```
 
---------
-
-Next we will use joing capabilities of `dplyr` to join averages with movies dataset and calculate the difference.
-
-![](images/image-join1.png)
-
-##
-
 ## benchmarking comparison
 
 Finally, I would like to show easy `head-to-head` comparison of base and dplyr.
 
-Lets prepapre data - generate a data frame with 10000 rows and 100 columns and 100 groups.
+Lets prepapre data - a data frame with 10000 rows and 100 columns and 100 groups. Later we execute function of interest.
 
 ```r
 rows = 10000

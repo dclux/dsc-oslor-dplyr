@@ -105,26 +105,35 @@ movies_df = tbl_df(movies)
 # summarise
     
     # dplyr
+    # Lets calculate median for a newly created `age` column.
     transmute(movies_df, yearsSinceDate = 2015 - year) %>% summarise(age.median = median(yearsSinceDate))
     
     # dplyr (budget)
+    # Or lets count ratio for movies that don't have a budget.
     movies_df %>% summarize(budget.na.percent = sum(is.na(budget)) / length(budget) )
     
     # dplyr summarise_each
+    # Lets count number of movies by type.
     select(movies_df, Action:Short) %>% summarise_each(funs(sum))
 
 # group by
     
-    #dplyr
+    # dplyr
+    # Lets calculate number of movies per year per type.
     select(movies_df, year, Action:Short) %>% group_by(year) %>% summarise_each(funs(sum))
     
-    #dplyr + filter
+    # dplyr + filter
+    # We can add additional filter and exclude all movies before 2000 and also count number of votes.
     select(movies_df, year, votes, Action:Short) %>% filter(year >= 2000) %>% group_by(year) %>% summarise_each(funs(sum))
+
+# combination
     
-    #dplyr average
+    # dplyr average
+    # We will start by calculating the average rating for each year.
     averages = select(movies_df, year, rating) %>% group_by(year) %>% summarise_each(funs(mean)) %>% rename(rating.avg = rating)
     
-    #dplyr join
+    # dplyr join
+    # Next we will use joing capabilities of `dplyr` to join averages with movies dataset and calculate the difference.
     inner_join(movies_df, averages, by = "year") %>% mutate(rating.diff = rating - rating.avg) %>% select(title, year, contains("rating"))
     
 # benchmarking
