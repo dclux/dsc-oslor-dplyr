@@ -118,13 +118,21 @@ Variables not shown: r6 (dbl), r7 (dbl), r8 (dbl), r9 (dbl), r10 (dbl), mpaa (fc
 
 The most common dplyr functions also referred to as verbs are as follows:
 
-* `filter()` and `slice()`
-* `arrange()`
-* `select()` and `rename()`
-* `mutate()` and `transmute()`
-* `summarise()`
-* `group_by()`
+* `filter()` and `slice()` - keep rows matching criterias
+* `arrange()` - reorder rows
+* `select()` and `rename()` - pick columns by name
+* `mutate()` and `transmute()` - add new variables
+* `summarise()` - reduce variables to values
+* `group_by()` - group rows
 
+## structure
+
+These all functions most workly the same.
+
+* The first argument is a data frame
+* Subsequent arguments say what to do with data frame
+* Always return a data frame
+* Never modify in place, if you want to modify your data frame, you need to assign the result
 
 ## Data exploration
 
@@ -193,7 +201,7 @@ $ Short       (int) 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 1, ...
 ## dplyr::filter
 
 `filter()` allows you to select a subset of the rows of a data frame matching some criterias or conditions.
-The first argument is the name of the data frame, and the second and subsequent are filtering expressions evaluated in the context of that data frame.
+The first argument is the name of the data frame, and the second and subsequent are filtering expressions evaluated in the context of that data frame. If you supply multiple arguments and they are all added together.
 
 ### AND condition
 
@@ -400,6 +408,8 @@ Variables not shown: r2 (dbl), r3 (dbl), r4 (dbl), r5 (dbl), r6 (dbl), r7 (dbl),
   Romance (int), Short (int)
 ```
 
+`Arrange` is a very expensive operation. Of all of the verbs in dplyr `arrange` is the only that needs to make a copy of a dataset.
+
 --------
 
 ### descending
@@ -488,8 +498,7 @@ Variables not shown: r9 (dbl), r10 (dbl), mpaa (fctr), Action (int), Animation (
 
 ## dplyr::select
 
-Often you work with large datasets with many columns where only a few are actually of interest to you.
-
+Often you work with large datasets with many columns where only a few are actually of interest to you. You provide a name of a dataframe and list of variables you want to keep.
 
 `base`
 
@@ -576,6 +585,8 @@ There are a number of helper functions you can use within `select()`, like `star
 ## mutate and transmute
 
 As well as selecting from the set of existing columns, it’s often useful to add new columns that are functions of existing columns or create stand alone variables.
+
+When you add new variables they always go to the end.
 
 As an example, lets calculate the age of the movie.
 
